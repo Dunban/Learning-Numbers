@@ -12,17 +12,16 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import java.util.Random;
 
-public class NumberGame_Activity extends AppCompatActivity {
-
-    Random rand = new Random();
-    private Button leftbutton = (Button) findViewById(R.id.leftbutton);
-    private Button rightbutton = (Button) findViewById(R.id.rightbutton);
-    private Integer leftnum;
-    private Integer rightnum;
-    private Integer score = 0;
-    private TextView scoreview = (TextView) findViewById(R.id.score);
+public class NumberGame_Activity extends AppCompatActivity
+{
+    NumberModal modal = new NumberModal();
+    private TextView score;
+    private Button left;
+    private Button right;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +29,12 @@ public class NumberGame_Activity extends AppCompatActivity {
         setContentView(R.layout.activity_number_game);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        generate();
-        scoreview.setText(score.toString());
+        score = (TextView) findViewById(R.id.score);
+        left = (Button) findViewById(R.id.leftbutton);
+        right = (Button) findViewById(R.id.rightbutton);
+        score.setText(modal.getScore() + "");
+        left.setText(modal.getLeftnum() + "");
+        right.setText(modal.getRightnum() + "");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -67,46 +70,31 @@ public class NumberGame_Activity extends AppCompatActivity {
 
     public void checkanswer(View view)
     {
-        if (view.getId() == leftbutton.getId())
+        if (view.getId() == left.getId())
         {
-            if (leftnum > rightnum)
+            if (modal.play(0))
             {
-                Toast.makeText(NumberGame_Activity.this, "You Got it right!",
-                        Toast.LENGTH_SHORT).show();
-                scoreview.setText(score);
+                Toast.makeText(NumberGame_Activity.this, "You got it right!", Toast.LENGTH_SHORT).show();
             }
             else
             {
-                Toast.makeText(NumberGame_Activity.this, "Sorry, you got it wrong.",
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(NumberGame_Activity.this, "Sorry, you got it wrong.", Toast.LENGTH_SHORT).show();
             }
         }
         else
         {
-            if (rightnum > leftnum)
+            if (modal.play(1))
             {
-                Toast.makeText(NumberGame_Activity.this, "You Got it right!",
-                        Toast.LENGTH_SHORT).show();
-                score++;
+                Toast.makeText(NumberGame_Activity.this, "You got it right!", Toast.LENGTH_SHORT).show();
             }
             else
             {
-                Toast.makeText(NumberGame_Activity.this, "Sorry, you got it wrong.",
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(NumberGame_Activity.this, "Sorry, you got it wrong.", Toast.LENGTH_SHORT).show();
             }
         }
-        generate();
-    }
-
-    public void generate()
-    {
-        leftnum = rand.nextInt(10) + 1;
-        rightnum = 0;
-        while (rightnum == leftnum && rightnum == 0)
-        {
-            rightnum = rand.nextInt(10) + 1;
-        }
-        leftbutton.setText(leftnum.toString());
-        rightbutton.setText(rightnum.toString());
+        modal.generate();
+        score.setText(modal.getScore() + "");
+        left.setText(modal.getLeftnum() + "");
+        right.setText(modal.getRightnum() + "");
     }
 }
